@@ -47,6 +47,10 @@ void gamePlayFriend(char[][3],int); //Play with Friend
 void displayBoard(char[][3],int); //To display the board
 int checkIfWin(char[][3],int); //To check if any player wins or not
 int checkIfDraw(char[][3],int); //To check if the match is draw or not
+int checkDiagonallyToMark(char[][3],int,char); // To check diagonal elements
+int checkRowWiseToMark(char[][3],int,char); // check  wise position to mark
+int checkColumnWiseToMark(char[][3],int,char); // check Column wise position to mark
+int checkRandomToMark(char[][3],int); // Find random position to mark
 char* getPosition(char[][3],int,int); //To get the valid position to mark
 int getPositionNumber(int,int); //Get position number by putting row and column index
 void gotoMainMenu(); //To go to the Main menu
@@ -134,7 +138,6 @@ void gotoMainMenu()
                 terminate();
         }
     }
-
 }
 void terminate()
 {
@@ -222,231 +225,35 @@ void gamePlaySmartComp(char mat[][3],int n)
 }
 int smartCompMove(char m[][3],int n)
 {
-    int i,j,cO,cX,flag;
+    int i,j,cO,cX,flag,pos;
     /*---Check the possibility to win---*/
-    //Check Row-wise
-    for(i=0;i<n;i++)
-    {
-        cO=0;
-        for(j=0;j<3;j++)
-        {
-            if(m[i][j]=='O')
-                cO++;
-        }
-        if(cO==2)
-        {
-             for(j=0;j<3;j++)
-            {
-                if(m[i][j]!='O')
-                    break;
-            }
-            if(m[i][j]!='X')
-            {
-                m[i][j]='O';
-                return getPositionNumber(i,j);
-            }
-        }
-    }
-    //Check Column-wise
-    for(i=0;i<n;i++)
-    {
-        cO=0;
-        for(j=0;j<3;j++)
-        {
-            if(m[j][i]=='O')
-                cO++;
-        }
-        if(cO==2)
-        {
-             for(j=0;j<3;j++)
-            {
-                if(m[j][i]!='O')
-                    break;
-            }
-            if(m[j][i]!='X')
-            {
-                m[j][i]='O';
-                return  getPositionNumber(j,i);
-            }
-        }
-    }
-    //Check Left Diagonal
-    cO=0;
-    for(i=0;i<n;i++)
-    {
-        if(m[i][i]=='O')
-            cO++;
-    }
-    if(cO==2)
-    {
-        for(i=0;i<3;i++)
-        {
-            if(m[i][i]!='O')
-                break;
-        }
-        if(m[i][i]!='X')
-        {
-            m[i][i]='O';
-            return  getPositionNumber(i,i);
-        }
-    }
-    //Check Right Diagonal
-    cO=0;
-    for(i=0;i<n;i++)
-    {
-        for(j=0;j<3;j++)
-        {
-            if(i+j==2)
-            {
-                if(m[i][j]=='O')
-                    cO++;
-            }
-        }
-    }
-    if(cO==2)
-    {
-        flag=0;
-        for(i=0;i<n;i++)
-        {
-            for(j=0;j<3;j++)
-            {
-                if(i+j==2)
-                {
-                    if(m[i][j]!='O')
-                    {
-                        flag=1;
-                        break;
-                    }
-                }
-            }
-            if(flag==1)
-                break;
-        }
-        if(m[i][j]!='X')
-        {
-            m[i][j]='O';
-            return  getPositionNumber(i,j);
-        }
-    }
+    pos=checkRowWiseToMark(m,n,'O');
+    if(pos!=-1)
+        return pos;
+
+    pos=checkColumnWiseToMark(m,n,'O');
+    if(pos!=-1)
+        return pos;
+
+    pos=checkDiagonallyToMark(m,n,'O');
+    if(pos!=-1)
+        return pos;
     /*---Check the possibility to defend---*/
-    //Check Row-wise
-    for(i=0;i<n;i++)
-    {
-        cX=0;
-        for(j=0;j<3;j++)
-        {
-            if(m[i][j]=='X')
-                cX++;
-        }
-        if(cX==2)
-        {
-            for(j=0;j<3;j++)
-            {
-                if(m[i][j]!='X')
-                    break;
-            }
-            if(m[i][j]!='O')
-            {
-                m[i][j]='O';
-                return  getPositionNumber(i,j);
-            }
-        }
-    }
-    //Check Column-wise
-    for(i=0;i<n;i++)
-    {
-        cX=0;
-        for(j=0;j<3;j++)
-        {
-            if(m[j][i]=='X')
-                cX++;
-        }
-        if(cX==2)
-        {
-            for(j=0;j<3;j++)
-            {
-                if(m[j][i]!='X')
-                    break;
-            }
-            if(m[j][i]!='O')
-            {
-                m[j][i]='O';
-                return  getPositionNumber(j,i);
-            }
-        }
-    }
-    //Check Left Diagonal
-    cX=0;
-    for(i=0;i<n;i++)
-    {
-        if(m[i][i]=='X')
-            cX++;
-    }
-    if(cX==2)
-    {
-        for(i=0;i<3;i++)
-        {
-            if(m[i][i]!='X')
-                break;
-        }
-        if(m[i][i]!='O')
-        {
-            m[i][i]='O';
-            return  getPositionNumber(i,i);
-        }
-    }
-    //Check Right Diagonal
-    cX=0;
-    for(i=0;i<n;i++)
-    {
-        for(j=0;j<3;j++)
-        {
-            if(i+j==2)
-            {
-                if(m[i][j]=='X')
-                    cX++;
-            }
-        }
-    }
-    if(cX==2)
-    {
-        flag=0;
-        for(i=0;i<n;i++)
-        {
-            for(j=0;j<3;j++)
-            {
-                if(i+j==2)
-                {
-                    if(m[i][j]!='X')
-                    {
-                        flag=1;
-                        break;
-                    }
-                }
-            }
-            if(flag==1)
-                break;
-        }
-        if(m[i][j]!='O')
-        {
-            m[i][j]='O';
-            return  getPositionNumber(i,j);
-        }
-    }
+    pos=checkRowWiseToMark(m,n,'X');
+    if(pos!=-1)
+        return pos;
+
+    pos=checkColumnWiseToMark(m,n,'X');
+    if(pos!=-1)
+        return pos;
+
+    pos=checkDiagonallyToMark(m,n,'X');
+    if(pos!=-1)
+        return pos;
 
     /*---If there is no possibility to win or defend---*/
-    srand(time(NULL));
-    int upper=9;
-    int lower=1;
-    while(1)
-    {
-        int pos=(rand()%(upper-lower+1))+lower;
-        if(getPosition(m,n,pos))
-        {
-            *getPosition(m,n,pos)='O';
-            return pos;
-        }
-    }
+    return(checkRandomToMark(m,n));
+
 }
 void gamePlayEvilComp(char mat[][3],int n)
 {
@@ -527,110 +334,17 @@ int evilCompMove(char m[][3],int n)
 {
     int i,j,cO,cX,flag,ifMarked=0,pos;
     /*---Check the possibility to win---*/
-    //Check Row-wise
-    for(i=0;i<n;i++)
-    {
-        cO=0;
-        for(j=0;j<3;j++)
-        {
-            if(m[i][j]=='O')
-                cO++;
-        }
-        if(cO==2)
-        {
-             for(j=0;j<3;j++)
-            {
-                if(m[i][j]!='O')
-                    break;
-            }
-            if(m[i][j]!='X')
-            {
-                m[i][j]='O';
-                return getPositionNumber(i,j);
-            }
-        }
-    }
-    //Check Column-wise
-    for(i=0;i<n;i++)
-    {
-        cO=0;
-        for(j=0;j<3;j++)
-        {
-            if(m[j][i]=='O')
-                cO++;
-        }
-        if(cO==2)
-        {
-             for(j=0;j<3;j++)
-            {
-                if(m[j][i]!='O')
-                    break;
-            }
-            if(m[j][i]!='X')
-            {
-                m[j][i]='O';
-                return getPositionNumber(j,i);
-            }
-        }
-    }
-    //Check Left Diagonal
-    cO=0;
-    for(i=0;i<n;i++)
-    {
-        if(m[i][i]=='O')
-            cO++;
-    }
-    if(cO==2)
-    {
-        for(i=0;i<3;i++)
-        {
-            if(m[i][i]!='O')
-                break;
-        }
-        if(m[i][i]!='X')
-        {
-            m[i][i]='O';
-            return getPositionNumber(i,i);
-        }
-    }
-    //Check Right Diagonal
-    cO=0;
-    for(i=0;i<n;i++)
-    {
-        for(j=0;j<3;j++)
-        {
-            if(i+j==2)
-            {
-                if(m[i][j]=='O')
-                    cO++;
-            }
-        }
-    }
-    if(cO==2)
-    {
-        flag=0;
-        for(i=0;i<n;i++)
-        {
-            for(j=0;j<3;j++)
-            {
-                if(i+j==2)
-                {
-                    if(m[i][j]!='O')
-                    {
-                        flag=1;
-                        break;
-                    }
-                }
-            }
-            if(flag==1)
-                break;
-        }
-        if(m[i][j]!='X')
-        {
-            m[i][j]='O';
-            return getPositionNumber(i,j);
-        }
-    }
+    pos=checkRowWiseToMark(m,n,'O');
+    if(pos!=-1)
+        return pos;
+
+    pos=checkColumnWiseToMark(m,n,'O');
+    if(pos!=-1)
+        return pos;
+
+    pos=checkDiagonallyToMark(m,n,'O');
+    if(pos!=-1)
+        return pos;
     /*---Check the possibility to defend---*/
     //Check Row-wise
     for(i=0;i<n;i++)
@@ -743,18 +457,7 @@ int evilCompMove(char m[][3],int n)
     if(ifMarked==1)
         return pos;
     /*---If there is no possibility to win or defend---*/
-    srand(time(NULL));
-    int upper=9;
-    int lower=1;
-    while(1)
-    {
-        pos=(rand()%(upper-lower+1))+lower;
-        if(getPosition(m,n,pos))
-        {
-            *getPosition(m,n,pos)='O';
-            return pos;
-        }
-    }
+   return(checkRandomToMark(m,n));
 }
 void gamePlayFriend(char mat[][3],int n)
 {
@@ -807,6 +510,7 @@ void gamePlayFriend(char mat[][3],int n)
     if(checkIfWin(mat,3))
     {
         system("cls");
+        printf("Player 1");
         heading();
         printf("\n       Player 1 : %s ( X )",name1);
         printf("\n       Player 2 : %s ( O )",name2);
@@ -838,7 +542,7 @@ void displayBoard(char m[][3],int n)
 }
 int checkIfWin(char m[][3],int n)
 {
-    int i,j;
+     int i,j;
     //Diagonals
     if(m[0][0]==m[1][1] && m[1][1]==m[2][2])
         return 1;
@@ -874,8 +578,155 @@ int checkIfDraw(char m[][3],int n)
     }
     if(c==9 && !checkIfWin(m,n))
         return 1;
-    else
-        return 0;
+    return 0;
+}
+int checkDiagonallyToMark(char m[][3],int n,char mark)
+{
+    int i,j,c=0,flag;
+    char mark2;
+    if(mark=='X')
+        mark2='O';
+    if(mark=='O')
+        mark2='X';
+    //Check Left Diagonal
+    for(i=0;i<n;i++)
+    {
+        if(m[i][i]==mark)
+            c++;
+    }
+    if(c==2)
+    {
+        for(i=0;i<3;i++)
+        {
+            if(m[i][i]!=mark)
+                break;
+        }
+        if(m[i][i]!=mark2)
+        {
+            m[i][i]='O';
+            return  getPositionNumber(i,i);
+        }
+    }
+    //Check Right Diagonal
+    c=0;
+    for(i=0;i<n;i++)
+    {
+        for(j=0;j<3;j++)
+        {
+            if(i+j==2)
+            {
+                if(m[i][j]==mark)
+                    c++;
+            }
+        }
+    }
+    if(c==2)
+    {
+        flag=0;
+        for(i=0;i<n;i++)
+        {
+            for(j=0;j<3;j++)
+            {
+                if(i+j==2)
+                {
+                    if(m[i][j]!=mark)
+                    {
+                        flag=1;
+                        break;
+                    }
+                }
+            }
+            if(flag==1)
+                break;
+        }
+        if(m[i][j]!=mark2)
+        {
+            m[i][j]='O';
+            return  getPositionNumber(i,j);
+        }
+    }
+    return -1;
+}
+int checkColumnWiseToMark(char m[][3],int n,char mark)
+{
+    int i,j,c=0;
+    char mark2;
+    if(mark=='X')
+        mark2='O';
+    if(mark=='O')
+        mark2='X';
+    for(i=0;i<n;i++)
+    {
+        c=0;
+        for(j=0;j<3;j++)
+        {
+            if(m[j][i]==mark)
+                c++;
+        }
+        if(c==2)
+        {
+            for(j=0;j<3;j++)
+            {
+                if(m[j][i]!=mark)
+                    break;
+            }
+            if(m[j][i]!=mark2)
+            {
+                m[j][i]='O';
+                return  getPositionNumber(j,i);
+            }
+        }
+    }
+    return -1;
+}
+int checkRowWiseToMark(char m[][3],int n,char mark)
+{
+    int i,j,c=0;
+    char mark2;
+    if(mark=='X')
+        mark2='O';
+    if(mark=='O')
+        mark2='X';
+    for(i=0;i<n;i++)
+    {
+        c=0;
+        for(j=0;j<3;j++)
+        {
+            if(m[i][j]==mark)
+                c++;
+        }
+        if(c==2)
+        {
+            for(j=0;j<3;j++)
+            {
+                if(m[i][j]!=mark)
+                    break;
+            }
+            if(m[i][j]!=mark2)
+            {
+                m[i][j]='O';
+                return  getPositionNumber(j,i);
+            }
+        }
+    }
+    return -1;
+}
+int checkRandomToMark(char m[][3],int n)
+{
+    int pos;
+    srand(time(NULL));
+    int upper=9;
+    int lower=1;
+    while(1)
+    {
+        pos=(rand()%(upper-lower+1))+lower;
+        if(getPosition(m,n,pos))
+        {
+            *getPosition(m,n,pos)='O';
+            return pos;
+        }
+    }
+    return -1;
 }
 char* getPosition(char m[][3],int n,int pos)
 {
@@ -894,26 +745,17 @@ char* getPosition(char m[][3],int n,int pos)
 }
 int getPositionNumber(int row,int col)
 {
-    if(row==0 && col==0)
-        return 1;
-    else if(row==0 && col==1)
-        return 2;
-    else if(row==0 && col==2)
-        return 3;
-    else if(row==1 && col==0)
-        return 4;
-    else if(row==1 && col==1)
-        return 5;
-    else if(row==1 && col==2)
-        return 6;
-    else if(row==2 && col==0)
-        return 7;
-    else if(row==2 && col==1)
-        return 8;
-    else if(row==2 && col==2)
-        return 9;
-    else
+    int i,j,p=0;
+    if(row<0 || row>2 || col<0 || col>2)
         return -1;
-
+    for(i=0;i<3;i++)
+    {
+        for(j=0;j<3;j++)
+        {
+            p++;
+            if(i==row && j==col)
+                return p;
+        }
+    }
 }
 /*----------------------------------------------------------------------*/
